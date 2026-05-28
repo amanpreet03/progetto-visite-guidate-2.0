@@ -130,7 +130,7 @@ public class MenuVolontario {
     }
 
     private void mostraDisponibilita(Volontario v, String nomeMese) {
-        sep("LE MIE DISPONIBILITÀ – " + nomeMese.toUpperCase());
+        sep("LE MIE DISPONIBILITÀ: " + nomeMese.toUpperCase());
         Set<LocalDate> disp = ctrl.getDisponibilita(v);
         if (disp.isEmpty()) {
             System.out.println("  Nessuna disponibilità dichiarata per " + nomeMese + ".");
@@ -151,14 +151,14 @@ public class MenuVolontario {
     }
 
     private void mostraVisiteConfermate(Volontario v) {
-        sep("VISITE CONFERMATE – SONO GUIDA");
+        sep("VISITE CONFERMATE  SONO GUIDA");
         List<Visita> visite = ctrl.getVisiteConfermate(v);
         if (visite.isEmpty()) {
             System.out.println("  Nessuna visita confermata al momento.");
         } else {
             for (Visita vis : visite) {
-                System.out.println("\n  📅 " + vis.getData()
-                    + " – " + vis.getTipo().getTitolo());
+                System.out.println("\n  " + vis.getData()
+                    + "  " + vis.getTipo().getTitolo());
                 System.out.println("     Ora: " + vis.getTipo().getOraInizio());
                 System.out.println("     Punto di incontro: " + vis.getTipo().getPuntoIncontro());
                 System.out.println("     Iscritti: " + vis.totaleIscritti()
@@ -166,7 +166,7 @@ public class MenuVolontario {
                 if (!vis.getIscrizioni().isEmpty()) {
                     System.out.println("     Prenotazioni:");
                     vis.getIscrizioni().forEach(i ->
-                        System.out.println("       " + i.getCodice() + " – " + i.getNumeroPersone() + " pers."));
+                        System.out.println("       " + i.getCodice() + "  " + i.getNumeroPersone() + " pers."));
                 }
             }
         }

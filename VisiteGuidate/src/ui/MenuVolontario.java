@@ -1,4 +1,4 @@
-/*package ui;
+package ui;
 
 import controller.Controller;
 import model.*;
@@ -13,7 +13,7 @@ import java.util.*;
  *   - vedere i tipi di visita a cui è associato
  *   - dichiarare le proprie disponibilità per il mese successivo
  *   - vedere le visite confermate in cui è designato come guida (V4, già preparato)
- 
+ */
 public class MenuVolontario {
 
     private final Controller ctrl;
@@ -39,6 +39,7 @@ public class MenuVolontario {
         }
     }
 
+    // operazione obbligatoria di cambio password al primo accesso
     private void forzaCambioPassword(Volontario v) {
         System.out.println("\n  [Primo accesso: scegli una nuova password]");
         while (true) {
@@ -176,4 +177,3 @@ public class MenuVolontario {
         System.out.println("\n══ " + titolo + " " + "═".repeat(Math.max(0, 30 - titolo.length())));
     }
 }
-*/

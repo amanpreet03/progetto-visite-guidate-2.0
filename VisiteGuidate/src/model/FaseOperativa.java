@@ -1,4 +1,4 @@
-/*package model;
+package model;
 
 import java.io.Serializable;
 
@@ -16,32 +16,32 @@ import java.io.Serializable;
  *
  * Nella V1 e V2 il sistema parte direttamente in RACCOLTA_DISPONIBILITA.
  * La V3 sblocca tutte le transizioni.
- *
+ */
 public enum FaseOperativa implements Serializable {
 
      *
-     * Fase normale: i volontari possono dichiarare disponibilità,
-     * il configuratore può aggiungere date precluse.
-     * Dura dal giorno 16 del mese i al giorno 15 del mese i+1.
+    // Fase normale: i volontari possono dichiarare disponibilità,
+    // il configuratore può aggiungere date precluse.
+    // Dura dal giorno 16 del mese i al giorno 15 del mese i+1.
      
-    RACCOLTA_DISPONIBILITA
+    RACCOLTA_DISPONIBILITA,
 
-     *
-     * Il configuratore ha chiuso la raccolta disponibilità e deve
-     * avviare la generazione del piano delle visite proposte.
+    //
+    // Il configuratore ha chiuso la raccolta disponibilità e deve
+    // avviare la generazione del piano delle visite proposte.
      
-    GENERAZIONE_PIANO
+    GENERAZIONE_PIANO,
 
-     *
-     * Il piano è stato generato. Il configuratore può ora inserire
-     * richieste di aggiunta/rimozione di luoghi, tipi di visita e volontari.
      
-    MODIFICHE_DATI
+     // Il piano è stato generato. Il configuratore può ora inserire
+     // richieste di aggiunta/rimozione di luoghi, tipi di visita e volontari.
+     
+    MODIFICHE_DATI,
 
-     *
-     * Le modifiche sono terminate. Il configuratore apre la nuova raccolta
-     * disponibilità (per il mese i+2) e il sistema torna a RACCOLTA_DISPONIBILITA.
+     // Le modifiche sono terminate. Il configuratore apre la nuova raccolta
+     // disponibilità (per il mese i+2) e il sistema torna a RACCOLTA_DISPONIBILITA.
      
     NUOVA_RACCOLTA
+}
 
-*/
+

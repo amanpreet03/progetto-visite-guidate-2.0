@@ -1,13 +1,13 @@
-/*package model;
+package model;
 
 import java.io.Serializable;
 
 
- * Rappresenta un utente fruitore: si registra autonomamente scegliendo
+ /* Rappresenta un utente fruitore: si registra autonomamente scegliendo
  * subito le sue credenziali (nessun primo accesso con password predefinita).
  *
  * Invariante: username != null, passwordHash != null
- 
+ */
 public class Fruitore implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,4 +44,3 @@ public class Fruitore implements Serializable {
     @Override
     public String toString() { return "Fruitore(" + username + ")"; }
 }
-*/

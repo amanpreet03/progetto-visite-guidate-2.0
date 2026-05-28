@@ -22,9 +22,7 @@ public class Controller {
         this.sistema = sistema;
     }
 
-    // ================================================================
     // LOGIN / REGISTRAZIONE
-    // ================================================================
 
     public Configuratore loginConfiguratore(String username, String password) {
         Configuratore c = sistema.trovaConfiguratore(username)
@@ -63,7 +61,7 @@ public class Controller {
         salva();
     }
 
-   /*  public Fruitore loginFruitore(String username, String password) {
+     public Fruitore loginFruitore(String username, String password) {
         Fruitore f = sistema.trovaFruitore(username)
             .orElseThrow(() -> new IllegalArgumentException("Username non trovato."));
         if (!f.passwordCorretta(password))
@@ -77,9 +75,9 @@ public class Controller {
         sistema.aggiungiFruitore(new Fruitore(username, password));
         salva();
     }
-    */
+    
     // INIZIALIZZAZIONE
-    // ================================================================
+    
 
     public void inizializza(String ambito, int maxPersone) {
         sistema.setAmbito(ambito);
@@ -101,7 +99,6 @@ public class Controller {
     }
 
     // FASE OPERATIVA 
-    // ================================================================
 
     public FaseOperativa getFase() { return sistema.getFase(); }
 
@@ -164,7 +161,6 @@ public class Controller {
     }
     
     // LUOGHI
-    // ================================================================
 
     public Luogo creaLuogo(String nome, String descr, String colloc) {
         if (sistema.trovaLuogo(nome).isPresent())
@@ -264,7 +260,6 @@ public class Controller {
     }
     
     // VOLONTARI
-    // ================================================================
 
     public Volontario creaVolontario(String nickname, String password) {
         if (sistema.trovaVolontario(nickname).isPresent())
@@ -326,7 +321,6 @@ public class Controller {
 }
         
     // VISITE
-    // ================================================================
 
     public List<Visita> getVisitePerStato(StatoVisita s) {
         if (s == StatoVisita.EFFETTUATA) return sistema.getArchivio();
@@ -338,8 +332,8 @@ public class Controller {
             .filter(vis -> vis.getGuida().equals(v))
             .collect(Collectors.toList());
     }
-    /*
-    // tutte le visite visibili al fruitore, ordinate per data
+    
+    //tutte le visite visibili al fruitore, ordinate per data
     public List<Visita> getVisiteFruitore() {
         List<Visita> out = new ArrayList<>();
         out.addAll(sistema.getVisitePerStato(StatoVisita.PROPOSTA));
@@ -348,7 +342,7 @@ public class Controller {
         out.sort(Comparator.comparing(Visita::getData));
         return out;
     }
-    */
+    
     // solo le proposte, ordinate per data
     public List<Visita> getVisiteProposte() {
         return sistema.getVisitePerStato(StatoVisita.PROPOSTA).stream()
@@ -356,7 +350,7 @@ public class Controller {
             .collect(Collectors.toList());
     }
 
-    /*  visite a cui il fruitore risulta iscritto
+    // visite a cui il fruitore risulta iscritto
     public List<Visita> getMieIscrizioni(Fruitore f) {
         return getVisiteFruitore().stream()
             .filter(v -> v.getIscrizioni().stream()
@@ -364,22 +358,24 @@ public class Controller {
             .collect(Collectors.toList());
     }
 
-    // ================================================================
-    // ISCRIZIONI FRUITORE (V4)
-    // ================================================================
-
     
-     * Iscrive il fruitore a una visita proposta.
+    // ISCRIZIONI FRUITORE 
+
+     /* Iscrive il fruitore a una visita proposta.
      * Pre:  visita PROPOSTA, 1 <= persone <= maxPersone, posti sufficienti
      * Post: iscrizione aggiunta, restituisce il codice di prenotazione
-     
+     */
+
     public String iscriviAVisita(Fruitore f, Visita visita, int persone) {
         int maxConsentito = sistema.getMaxPersone();
+        
         if (persone < 1 || persone > maxConsentito)
             throw new IllegalArgumentException(
                 "Persone: deve essere tra 1 e " + maxConsentito + ".");
-        if (visita.getStato() != StatoVisita.PROPOSTA)
+        
+                if (visita.getStato() != StatoVisita.PROPOSTA)
             throw new IllegalStateException("Iscrizioni chiuse per questa visita.");
+        
         if (visita.totaleIscritti() + persone > visita.getTipo().getMaxPartecipanti())
             throw new IllegalStateException(
                 "Posti disponibili: " + visita.postiLiberi() + ". Riduci il numero.");
@@ -393,22 +389,25 @@ public class Controller {
     /*
      * Disdice un'iscrizione tramite codice.
      * Pre:  visita PROPOSTA o COMPLETA, codice appartiene al fruitore f
-     
+     */
     public void disdiciIscrizione(Fruitore f, Visita visita, String codice) {
+        
         if (visita.getStato() != StatoVisita.PROPOSTA && visita.getStato() != StatoVisita.COMPLETA)
             throw new IllegalStateException("Non puoi disdire: visita già " + visita.getStato() + ".");
+        
         Iscrizione trovata = visita.cercaIscrizione(codice)
             .orElseThrow(() -> new IllegalArgumentException("Codice prenotazione non trovato."));
-        if (!trovata.getUsernameIscritto().equalsIgnoreCase(f.getUsername()))
+        
+            if (!trovata.getUsernameIscritto().equalsIgnoreCase(f.getUsername()))
             throw new IllegalArgumentException("Questo codice non appartiene al tuo account.");
+        
         visita.rimuoviIscrizione(codice);
         salva();
     }
 
     public List<Fruitore> getFruitori() { return sistema.getFruitori(); }
-    */
+    
     // DATE PRECLUSE
-    // ================================================================
 
     public void aggiungiDataPreclusa(LocalDate d) {
         sistema.aggiungiDataPreclusa(d);

@@ -1,4 +1,4 @@
-/*package ui;
+package ui;
 
 import controller.Controller;
 import model.*;
@@ -8,7 +8,7 @@ import java.util.List;
 /*
  * Menu testuale per il fruitore – Versione 4.
  * Il fruitore può vedere le visite, iscriversi e disdire.
- 
+*/
 public class MenuFruitore {
 
     private final Controller ctrl;
@@ -21,8 +21,10 @@ public class MenuFruitore {
 
     public Fruitore login() {
         sep("ACCESSO FRUITORE");
+        
         String usr = Console.leggiStringa("  Username: ");
         String pwd = Console.leggiStringa("  Password: ");
+        
         try {
             Fruitore f = ctrl.loginFruitore(usr, pwd);
             System.out.println("  Benvenuto, " + f.getUsername() + "!");
@@ -35,10 +37,12 @@ public class MenuFruitore {
 
     public void registrazione() {
         sep("REGISTRAZIONE FRUITORE");
+        
         System.out.println("  Scegli le tue credenziali per accedere al portale visite.");
         String usr = Console.leggiStringa("  Username: ");
         String pwd = Console.leggiStringa("  Password: ");
         String pwd2 = Console.leggiStringa("  Conferma password: ");
+        
         if (!pwd.equals(pwd2)) {
             System.out.println("  Le password non coincidono. Riprova.");
             Console.pausa(); return;
@@ -81,7 +85,7 @@ public class MenuFruitore {
      * Mostra tutte le visite visibili al fruitore:
      * proposte e confermate con dettaglio completo,
      * cancellate con solo titolo e data.
-     
+     */
     private void visualizzaVisite() {
         sep("VISITE DISPONIBILI");
         List<Visita> visite = ctrl.getVisiteFruitore();
@@ -115,7 +119,7 @@ public class MenuFruitore {
     /*
      * Il fruitore sceglie una visita proposta e indica quante persone vuole iscrivere.
      * Post: viene rilasciato il codice di prenotazione
-     
+     */ 
     private void iscrivitiAVisita(Fruitore f) {
         sep("ISCRIVITI A UNA VISITA");
         List<Visita> proposte = ctrl.getVisiteProposte();
@@ -154,8 +158,8 @@ public class MenuFruitore {
         Console.pausa();
     }
 
-    /*
-     * Mostra le prenotazioni attive del fruitore (proposte, confermate, cancellate).
+    
+    // Mostra le prenotazioni attive del fruitore (proposte, confermate, cancellate).
      
     private void miePrenotazioni(Fruitore f) {
         sep("LE MIE PRENOTAZIONI");
@@ -164,8 +168,7 @@ public class MenuFruitore {
             System.out.println("  Nessuna prenotazione attiva.");
             Console.pausa(); return;
         }
-        for (Visita v : mie) {
-            // trovo le iscrizioni di questo fruitore in questa visita
+        for (Visita v : mie) { // trovo le iscrizioni di questo fruitore in questa visita
             v.getIscrizioni().stream()
                 .filter(i -> i.getUsernameIscritto().equalsIgnoreCase(f.getUsername()))
                 .forEach(i -> {
@@ -185,7 +188,7 @@ public class MenuFruitore {
     /*
      * Il fruitore disdice una prenotazione indicando il codice.
      * Si può disdire solo se la visita è ancora PROPOSTA (o COMPLETA).
-     
+    */
     private void disdiciPrenotazione(Fruitore f) {
         sep("DISDICI PRENOTAZIONE");
         List<Visita> mie = ctrl.getMieIscrizioni(f);
@@ -233,4 +236,3 @@ public class MenuFruitore {
         System.out.println("\n══ " + t + " " + "═".repeat(Math.max(0, 30 - t.length())));
     }
 }
-*/

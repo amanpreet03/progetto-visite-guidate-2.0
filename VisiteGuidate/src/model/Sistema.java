@@ -35,26 +35,6 @@ public class Sistema implements Serializable {
     private final Map<String, Set<LocalDate>> datePrecluse = new HashMap<>();
     // date precluse per mese: "YYYY-MM" -> insieme di date
     
-    /* fase del ciclo mensile V3
-    private FaseOperativa fase = FaseOperativa.RACCOLTA_DISPONIBILITA;
-    
-
-    /*
-    
-    // private final List<Fruitore>      fruitori       = new ArrayList<>();
-
-
-    // ---- fase operativa ----
-
-    public FaseOperativa getFase()             { return fase; }
-    public void setFase(FaseOperativa f)       { this.fase = f; }
-    public int  getAnnoRaccolta()              { return annoRaccolta; }
-    public int  getMeseRaccolta()              { return meseRaccolta; }
-    public void setMeseRaccolta(int anno, int mese) {
-        this.annoRaccolta = anno;
-        this.meseRaccolta = mese;
-    }
-    */
     // ---- ambito ----
 
     public void setAmbito(String ambito) {
@@ -113,21 +93,6 @@ public class Sistema implements Serializable {
     public boolean rimuoviVolontario(Volontario v)  { return volontari.remove(v); }
     public List<Volontario> getVolontari()           { return Collections.unmodifiableList(volontari); }
 
-    /*  ---- fruitori (V4) ----
-
-    public void aggiungiFruitore(Fruitore f) {
-        if (usernameOccupato(f.getUsername()))
-            throw new IllegalArgumentException("Username già in uso: " + f.getUsername());
-        fruitori.add(f);
-    }
-
-    public Optional<Fruitore> trovaFruitore(String username) {
-        return fruitori.stream()
-            .filter(f -> f.getUsername().equalsIgnoreCase(username)).findFirst();
-    }
-
-    public List<Fruitore> getFruitori() { return Collections.unmodifiableList(fruitori); }
-    */
     // ---- luoghi ----
 
     public void aggiungiLuogo(Luogo l) {
@@ -202,7 +167,6 @@ public class Sistema implements Serializable {
     // public boolean usernameOccupato(String username) {
     //    return trovaConfiguratore(username).isPresent()
     //        || trovaVolontario(username).isPresent()
-    //        || trovaFruitore(username).isPresent();
     // }
 
     public List<TipoVisita> getTipiVisitaPerVolontario(Volontario v) {

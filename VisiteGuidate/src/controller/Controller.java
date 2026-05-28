@@ -63,21 +63,6 @@ public class Controller {
         salva();
     }
 
-   /*  public Fruitore loginFruitore(String username, String password) {
-        Fruitore f = sistema.trovaFruitore(username)
-            .orElseThrow(() -> new IllegalArgumentException("Username non trovato."));
-        if (!f.passwordCorretta(password))
-            throw new IllegalArgumentException("Password errata.");
-        return f;
-    }
-
-    public void registraFruitore(String username, String password) {
-        if (sistema.usernameOccupato(username))
-            throw new IllegalArgumentException("Username già in uso: " + username);
-        sistema.aggiungiFruitore(new Fruitore(username, password));
-        salva();
-    }
-    */
     // ================================================================
     // INIZIALIZZAZIONE
     // ================================================================
@@ -101,65 +86,6 @@ public class Controller {
     public int getAnnoRaccolta() { return sistema.getAnnoRaccolta(); }
     public int getMeseRaccolta() { return sistema.getMeseRaccolta(); }
 
-    /*  ================================================================
-    // FASE OPERATIVA (V3)
-    // ================================================================
-
-    public FaseOperativa getFase() { return sistema.getFase(); }
-
-    /*
-     * PASSO 1 – giorno 16: chiude la raccolta disponibilità.
-     * Pre:  fase == RACCOLTA_DISPONIBILITA
-     * Post: fase == GENERAZIONE_PIANO
-     
-    public void chiudiRaccoltaDisponibilita() {
-        if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
-            throw new IllegalStateException("Non siamo in fase di raccolta disponibilità.");
-        sistema.setFase(FaseOperativa.GENERAZIONE_PIANO);
-        salva();
-    }
-
-    /*
-     * PASSO 2 – genera il piano visite per il mese di raccolta.
-     * Pre:  fase == GENERAZIONE_PIANO
-     * Post: fase == MODIFICHE_DATI, visite aggiunte al sistema
-     
-    public List<Visita> generaPianoVisite() {
-        if (sistema.getFase() != FaseOperativa.GENERAZIONE_PIANO)
-            throw new IllegalStateException("Prima chiudi la raccolta disponibilità.");
-
-        int anno = sistema.getAnnoRaccolta();
-        int mese = sistema.getMeseRaccolta();
-
-        List<Visita> nuove = Pianificatore.generaPiano(
-            sistema.getLuoghi(), anno, mese, sistema.getDatePrecluse(anno, mese));
-
-        for (Visita v : nuove) sistema.aggiungiVisita(v);
-
-        // le disponibilità usate si possono eliminare
-        for (Volontario v : sistema.getVolontari()) v.cancellaDisponibilita(anno, mese);
-        sistema.cancellaDatePrecluse(anno, mese);
-
-        sistema.setFase(FaseOperativa.MODIFICHE_DATI);
-        salva();
-        return nuove;
-    }
-
-    /*
-     * PASSO 3 – apre la nuova raccolta disponibilità (mese i+2).
-     * Pre:  fase == MODIFICHE_DATI
-     * Post: fase == RACCOLTA_DISPONIBILITA, mese raccolta avanzato
-     
-    public void apriNuovaRaccolta() {
-        if (sistema.getFase() != FaseOperativa.MODIFICHE_DATI)
-            throw new IllegalStateException("Prima genera il piano e gestisci le eventuali modifiche.");
-        LocalDate att = LocalDate.of(sistema.getAnnoRaccolta(), sistema.getMeseRaccolta(), 1);
-        LocalDate prox = att.plusMonths(1);
-        sistema.setMeseRaccolta(prox.getYear(), prox.getMonthValue());
-        sistema.setFase(FaseOperativa.RACCOLTA_DISPONIBILITA);
-        salva();
-    }
-    */
     // ================================================================
     // LUOGHI
     // ================================================================
@@ -191,60 +117,7 @@ public class Controller {
 
     public List<Luogo> getLuoghi() { return sistema.getLuoghi(); }
 
-    /*
-     * Rimuove un luogo con cascata (V3):
-     *   - scollega tutti i tipi di visita dai volontari
-     *   - rimuove i volontari rimasti senza alcun tipo
-     
-    public void rimuoviLuogo(String nomeLuogo) {
-        verificaFaseModifiche();
-        Luogo luogo = ottieniLuogo(nomeLuogo);
-        for (TipoVisita tv : new ArrayList<>(luogo.getTipiVisita()))
-            scollegaDaiVolontari(tv);
-        rimuoviVolontariSenzaTipi();
-        sistema.rimuoviLuogo(luogo);
-        salva();
-    }
-
-    /*
-     * Rimuove un tipo di visita con cascata (V3):
-     *   - scollega dai volontari
-     *   - se il luogo resta vuoto → rimuovi il luogo
-     *   - se un volontario resta senza tipi → rimuovi il volontario
-     
-    public void rimuoviTipoVisita(String nomeLuogo, String titoloTV) {
-        verificaFaseModifiche();
-        Luogo luogo = ottieniLuogo(nomeLuogo);
-        TipoVisita tv = luogo.getTipiVisita().stream()
-            .filter(t -> t.getTitolo().equalsIgnoreCase(titoloTV))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Tipo di visita non trovato."));
-        scollegaDaiVolontari(tv);
-        luogo.rimuoviTipoVisita(titoloTV);
-        if (!luogo.hasTipiVisita()) sistema.rimuoviLuogo(luogo);
-        rimuoviVolontariSenzaTipi();
-        salva();
-    }
-
-    /*
-     * Rimuove un volontario con cascata (V3):
-     *   - rimuovilo da ogni tipo di visita
-     *   - se un tipo resta senza volontari → rimuovi quel tipo
-     *   - se un luogo resta senza tipi → rimuovi quel luogo
-     
-    public void rimuoviVolontario(String nickname) {
-        verificaFaseModifiche();
-        Volontario v = sistema.trovaVolontario(nickname)
-            .orElseThrow(() -> new IllegalArgumentException("Volontario non trovato: " + nickname));
-        for (Luogo l : sistema.getLuoghi())
-            for (TipoVisita tv : l.getTipiVisita())
-                tv.rimuoviVolontario(v);
-        rimuoviTipiSenzaVolontari();
-        rimuoviLuoghiSenzaTipi();
-        sistema.rimuoviVolontario(v);
-        salva();
-    }
-    */
+ 
     // ================================================================
     // VOLONTARI
     // ================================================================
@@ -269,17 +142,11 @@ public class Controller {
     public List<Volontario>  getVolontari()                      { return sistema.getVolontari(); }
     public List<TipoVisita>  getTipiVisitaDelVolontario(Volontario v) { return sistema.getTipiVisitaPerVolontario(v); }
 
-    // DISPONIBILITÀ (V2)
+    // DISPONIBILITÀ 
     // ================================================================
 
     public void aggiungiDisponibilita(Volontario v, LocalDate data) {
-    //    if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
-    //        throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
-
-    //    if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta())
-    //        throw new IllegalArgumentException(
-    //            "Puoi dichiarare disponibilità solo per il mese " +
-    //            sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + ".");
+    
         if (v == null) {
         throw new IllegalArgumentException("Il volontario non può essere nullo.");
         }
@@ -343,17 +210,8 @@ public class Controller {
             .filter(vis -> vis.getGuida().equals(v))
             .collect(Collectors.toList());
     }
-    /*
-    // tutte le visite visibili al fruitore, ordinate per data
-    public List<Visita> getVisiteFruitore() {
-        List<Visita> out = new ArrayList<>();
-        out.addAll(sistema.getVisitePerStato(StatoVisita.PROPOSTA));
-        out.addAll(sistema.getVisitePerStato(StatoVisita.CONFERMATA));
-        out.addAll(sistema.getVisitePerStato(StatoVisita.CANCELLATA));
-        out.sort(Comparator.comparing(Visita::getData));
-        return out;
-    }
-    */
+   
+    
     // solo le proposte, ordinate per data
     public List<Visita> getVisiteProposte() {
         return sistema.getVisitePerStato(StatoVisita.PROPOSTA).stream()
@@ -361,57 +219,7 @@ public class Controller {
             .collect(Collectors.toList());
     }
 
-    /*  visite a cui il fruitore risulta iscritto
-    public List<Visita> getMieIscrizioni(Fruitore f) {
-        return getVisiteFruitore().stream()
-            .filter(v -> v.getIscrizioni().stream()
-                .anyMatch(i -> i.getUsernameIscritto().equalsIgnoreCase(f.getUsername())))
-            .collect(Collectors.toList());
-    }
-
-    // ================================================================
-    // ISCRIZIONI FRUITORE (V4)
-    // ================================================================
-
     
-     * Iscrive il fruitore a una visita proposta.
-     * Pre:  visita PROPOSTA, 1 <= persone <= maxPersone, posti sufficienti
-     * Post: iscrizione aggiunta, restituisce il codice di prenotazione
-     
-    public String iscriviAVisita(Fruitore f, Visita visita, int persone) {
-        int maxConsentito = sistema.getMaxPersone();
-        if (persone < 1 || persone > maxConsentito)
-            throw new IllegalArgumentException(
-                "Persone: deve essere tra 1 e " + maxConsentito + ".");
-        if (visita.getStato() != StatoVisita.PROPOSTA)
-            throw new IllegalStateException("Iscrizioni chiuse per questa visita.");
-        if (visita.totaleIscritti() + persone > visita.getTipo().getMaxPartecipanti())
-            throw new IllegalStateException(
-                "Posti disponibili: " + visita.postiLiberi() + ". Riduci il numero.");
-
-        Iscrizione i = new Iscrizione(f.getUsername(), persone);
-        visita.aggiungiIscrizione(i);
-        salva();
-        return i.getCodice();
-    }
-
-    /*
-     * Disdice un'iscrizione tramite codice.
-     * Pre:  visita PROPOSTA o COMPLETA, codice appartiene al fruitore f
-     
-    public void disdiciIscrizione(Fruitore f, Visita visita, String codice) {
-        if (visita.getStato() != StatoVisita.PROPOSTA && visita.getStato() != StatoVisita.COMPLETA)
-            throw new IllegalStateException("Non puoi disdire: visita già " + visita.getStato() + ".");
-        Iscrizione trovata = visita.cercaIscrizione(codice)
-            .orElseThrow(() -> new IllegalArgumentException("Codice prenotazione non trovato."));
-        if (!trovata.getUsernameIscritto().equalsIgnoreCase(f.getUsername()))
-            throw new IllegalArgumentException("Questo codice non appartiene al tuo account.");
-        visita.rimuoviIscrizione(codice);
-        salva();
-    }
-
-    public List<Fruitore> getFruitori() { return sistema.getFruitori(); }
-    */
     // ================================================================
     // DATE PRECLUSE
     // ================================================================

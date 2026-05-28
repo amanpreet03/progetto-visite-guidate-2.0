@@ -82,23 +82,14 @@ public class MenuConfiguratore {
             }
 
             System.out.println("  Ambito: " + ctrl.getAmbito());
-            //System.out.println("  Fase:   " + ctrl.getFase());
-            //if (ctrl.getMeseRaccolta() > 0)
-            //    System.out.println("  Raccolta: " + ctrl.getMeseRaccolta() + "/" + ctrl.getAnnoRaccolta());
+            if (ctrl.getMeseRaccolta() > 0)
+            System.out.println("  Raccolta: " + ctrl.getMeseRaccolta() + "/" + ctrl.getAnnoRaccolta());
             System.out.println();
             System.out.println("  ── Dati ───────────────────────────────");
             System.out.println("  1. Aggiungi luogo");
             System.out.println("  2. Aggiungi tipo di visita a luogo esistente");
             System.out.println("  3. Aggiungi volontario a tipo di visita");
             System.out.println("  4. Inserisci nuovo volontario");
-        //    System.out.println("  ── V3 – Rimozioni ─────────────────────");
-        //    System.out.println("  5. Rimuovi luogo");
-        //    System.out.println("  6. Rimuovi tipo di visita");
-        //    System.out.println("  7. Rimuovi volontario");
-        //    System.out.println("  ── V3 – Ciclo mensile ─────────────────");
-        //    System.out.println("  8. Chiudi raccolta disponibilità");
-        //    System.out.println("  9. Genera piano visite");
-        //    System.out.println("  10. Apri nuova raccolta disponibilità");
             System.out.println("  ── Visualizzazione ────────────────────");
             System.out.println("  5. Visualizza luoghi");
             System.out.println("  6. Visualizza volontari");
@@ -107,18 +98,12 @@ public class MenuConfiguratore {
             System.out.println("  9. Modifica max persone per iscrizione");
             System.out.println("  0. Esci");
 
-            int s = Console.leggiInt("  Scelta: ", 0, 15);
+            int s = Console.leggiInt("  Scelta: ", 0, 9);
             switch (s) {
                 case 1  -> aggiungiLuogo();
                 case 2  -> aggiungiTipoVisita();
                 case 3  -> aggiungiVolontarioATipo();
                 case 4  -> inserisciVolontario();
-               // case 5  -> rimuoviLuogo();
-               // case 6  -> rimuoviTipoVisita();
-               // case 7  -> rimuoviVolontario();
-               // case 8  -> chiudiRaccolta();
-               // case 9  -> generaPiano();
-               //case 10 -> apriRaccolta();
                 case 5  -> mostraLuoghi();
                 case 6  -> mostraVolontari();
                 case 7  -> mostraVisite();
@@ -205,87 +190,6 @@ public class MenuConfiguratore {
         Console.pausa();
     }
 
-    /*  ---- rimozioni V3 ----
-
-    private void rimuoviLuogo() {
-        sep("RIMUOVI LUOGO");
-        mostraLuoghiBreve();
-        String nome = Console.leggiStringa("  Nome luogo da rimuovere: ");
-        if (!Console.leggiSiNo("  Sicuro? Verranno rimossi anche tutti i tipi di visita associati")) {
-            System.out.println("  Operazione annullata."); Console.pausa(); return;
-        }
-        try {
-            ctrl.rimuoviLuogo(nome);
-            System.out.println("  Luogo rimosso (con eventuali volontari rimasti senza tipi).");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-
-    private void rimuoviTipoVisita() {
-        sep("RIMUOVI TIPO DI VISITA");
-        mostraLuoghiBreve();
-        String nomeLuogo = Console.leggiStringa("  Nome luogo: ");
-        try {
-            Luogo l = ctrl.ottieniLuogo(nomeLuogo);
-            l.getTipiVisita().forEach(tv -> System.out.println("    – " + tv.getTitolo()));
-            String titolo = Console.leggiStringa("  Titolo tipo da rimuovere: ");
-            if (!Console.leggiSiNo("  Confermi la rimozione?")) {
-                System.out.println("  Annullato."); Console.pausa(); return;
-            }
-            ctrl.rimuoviTipoVisita(nomeLuogo, titolo);
-            System.out.println("  Tipo rimosso (cascata applicata).");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-
-    private void rimuoviVolontario() {
-        sep("RIMUOVI VOLONTARIO");
-        ctrl.getVolontari().forEach(v -> System.out.println("    – " + v.getNickname()));
-        String nick = Console.leggiStringa("  Nickname da rimuovere: ");
-        if (!Console.leggiSiNo("  Sicuro? Possono venire rimossi anche tipi di visita e luoghi")) {
-            System.out.println("  Annullato."); Console.pausa(); return;
-        }
-        try {
-            ctrl.rimuoviVolontario(nick);
-            System.out.println("  Volontario rimosso (cascata applicata).");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-
-    // ---- ciclo mensile V3 ----
-
-    private void chiudiRaccolta() {
-        sep("CHIUDI RACCOLTA DISPONIBILITÀ");
-        try {
-            ctrl.chiudiRaccoltaDisponibilita();
-            System.out.println("  Raccolta chiusa. Ora puoi generare il piano.");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-
-    private void generaPiano() {
-        sep("GENERA PIANO VISITE");
-        try {
-            List<Visita> nuove = ctrl.generaPianoVisite();
-            System.out.println("  Piano generato: " + nuove.size() + " visite proposte.");
-            nuove.forEach(v -> System.out.println(
-                "    " + v.getData() + " – " + v.getTipo().getTitolo()
-                + " (guida: " + v.getGuida().getNickname() + ")"));
-            System.out.println("\n  Ora puoi inserire modifiche ai dati (opzionale).");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-
-    private void apriRaccolta() {
-        sep("APRI NUOVA RACCOLTA DISPONIBILITÀ");
-        try {
-            ctrl.apriNuovaRaccolta();
-            System.out.println("  Raccolta aperta per il mese "
-                + ctrl.getMeseRaccolta() + "/" + ctrl.getAnnoRaccolta() + ".");
-        } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
-        Console.pausa();
-    }
-    */
     // ---- visualizzazione ----
 
     private void mostraLuoghi() {

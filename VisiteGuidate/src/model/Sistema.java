@@ -18,8 +18,14 @@ public class Sistema implements Serializable {
     public static final String CRED_USERNAME = "admin";
     public static final String CRED_PASSWORD = "admin123";
 
+    
+
     private String ambitoTerritoriale;
     private int maxPersonePerIscrizione;
+
+    private int annoRaccolta;
+    private int meseRaccolta;
+
     private final List<Configuratore> configuratori = new ArrayList<>();
     private final List<Volontario>    volontari      = new ArrayList<>();
     private final List<Luogo>         luoghi         = new ArrayList<>();
@@ -29,10 +35,9 @@ public class Sistema implements Serializable {
     private final Map<String, Set<LocalDate>> datePrecluse = new HashMap<>();
     // date precluse per mese: "YYYY-MM" -> insieme di date
     
-    /* fase del ciclo mensile (V3)
+    /* fase del ciclo mensile V3
     private FaseOperativa fase = FaseOperativa.RACCOLTA_DISPONIBILITA;
-    private int annoRaccolta;
-    private int meseRaccolta;
+    
 
     /*
     
@@ -66,6 +71,17 @@ public class Sistema implements Serializable {
     public void setMaxPersone(int max) { this.maxPersonePerIscrizione = max; }
     public int  getMaxPersone()        { return maxPersonePerIscrizione; }
 
+    // ---- racolta periodo ----
+
+    public int getMeseRaccolta(){ return meseRaccolta; }
+    public int getAnnoRaccolta(){return annoRaccolta; }
+    
+    public void setMeseRaccolta ( int anno, int mese) {
+
+        this.annoRaccolta = anno;
+        this.meseRaccolta = mese;
+    }
+
     // ---- configuratori ----
 
     public void aggiungiConfiguratore(Configuratore c) {
@@ -96,7 +112,6 @@ public class Sistema implements Serializable {
 
     public boolean rimuoviVolontario(Volontario v)  { return volontari.remove(v); }
     public List<Volontario> getVolontari()           { return Collections.unmodifiableList(volontari); }
-    List<Volontario> getVolontariInterni()           { return volontari; }
 
     /*  ---- fruitori (V4) ----
 
@@ -127,14 +142,12 @@ public class Sistema implements Serializable {
 
     public boolean rimuoviLuogo(Luogo l)  { return luoghi.remove(l); }
     public List<Luogo> getLuoghi()         { return Collections.unmodifiableList(luoghi); }
-    List<Luogo> getLuoghiInterni()         { return luoghi; }
 
     // ---- visite ----
 
     public void aggiungiVisita(Visita v)  { visite.add(v); }
     public List<Visita> getVisite()       { return Collections.unmodifiableList(visite); }
     public List<Visita> getArchivio()     { return Collections.unmodifiableList(archivio); }
-
     public List<Visita> getVisitePerStato(StatoVisita s) {
         return visite.stream().filter(v -> v.getStato() == s).collect(Collectors.toList());
     }
@@ -143,6 +156,7 @@ public class Sistema implements Serializable {
      * Aggiorna gli stati delle visite in base alla data odierna.
      * Chiamato all'avvio dell'applicazione.
      */
+    
     public void aggiornaStati(LocalDate oggi) {
         List<Visita> daRimuovere = new ArrayList<>();
         for (Visita v : visite) {

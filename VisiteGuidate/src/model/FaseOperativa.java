@@ -19,7 +19,6 @@ import java.io.Serializable;
  */
 public enum FaseOperativa implements Serializable {
 
-     *
     // Fase normale: i volontari possono dichiarare disponibilità,
     // il configuratore può aggiungere date precluse.
     // Dura dal giorno 16 del mese i al giorno 15 del mese i+1.

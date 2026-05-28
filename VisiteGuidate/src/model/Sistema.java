@@ -32,29 +32,28 @@ public class Sistema implements Serializable {
     private final List<Visita>        visite         = new ArrayList<>();
     private final List<Visita>        archivio       = new ArrayList<>();
     
+     // date precluse per mese: "YYYY-MM" -> insieme di date
     private final Map<String, Set<LocalDate>> datePrecluse = new HashMap<>();
-    // date precluse per mese: "YYYY-MM" -> insieme di date
-    
-    /* fase del ciclo mensile V3
-    private FaseOperativa fase = FaseOperativa.RACCOLTA_DISPONIBILITA;
-    
-
-    /*
+   
     
     // private final List<Fruitore>      fruitori       = new ArrayList<>();
-
-
+    
     // ---- fase operativa ----
+    // fase del ciclo mensile V3
 
+    private FaseOperativa fase = FaseOperativa.RACCOLTA_DISPONIBILITA;
+   
     public FaseOperativa getFase()             { return fase; }
     public void setFase(FaseOperativa f)       { this.fase = f; }
+   
+    // ---- racolta periodo ----
     public int  getAnnoRaccolta()              { return annoRaccolta; }
     public int  getMeseRaccolta()              { return meseRaccolta; }
     public void setMeseRaccolta(int anno, int mese) {
         this.annoRaccolta = anno;
         this.meseRaccolta = mese;
     }
-    */
+    
     // ---- ambito ----
 
     public void setAmbito(String ambito) {
@@ -71,16 +70,6 @@ public class Sistema implements Serializable {
     public void setMaxPersone(int max) { this.maxPersonePerIscrizione = max; }
     public int  getMaxPersone()        { return maxPersonePerIscrizione; }
 
-    // ---- racolta periodo ----
-
-    public int getMeseRaccolta(){ return meseRaccolta; }
-    public int getAnnoRaccolta(){return annoRaccolta; }
-    
-    public void setMeseRaccolta ( int anno, int mese) {
-
-        this.annoRaccolta = anno;
-        this.meseRaccolta = mese;
-    }
 
     // ---- configuratori ----
 

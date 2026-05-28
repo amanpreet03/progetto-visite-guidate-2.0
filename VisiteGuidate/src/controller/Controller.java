@@ -85,8 +85,10 @@ public class Controller {
     public void inizializza(String ambito, int maxPersone) {
         sistema.setAmbito(ambito);
         sistema.setMaxPersone(maxPersone);
+        
         LocalDate prossimo = LocalDate.now().plusMonths(1);
         sistema.setMeseRaccolta(prossimo.getYear(), prossimo.getMonthValue());
+        sistema.setFase(FaseOperativa.RACCOLTA_DISPONIBILITA);
         salva();
     }
 
@@ -98,20 +100,21 @@ public class Controller {
         sistema.setMaxPersone(max);
         salva();
     }
-    public int getAnnoRaccolta() { return sistema.getAnnoRaccolta(); }
-    public int getMeseRaccolta() { return sistema.getMeseRaccolta(); }
 
-    /*  ================================================================
-    // FASE OPERATIVA (V3)
+    // ================================================================
+    // FASE OPERATIVA 
     // ================================================================
 
     public FaseOperativa getFase() { return sistema.getFase(); }
 
+    public int getAnnoRaccolta() {return sistema.getAnnoRaccolta();}
+    public int getMeseRaccolta() { return sistema.getMeseRaccolta();}
+    
     /*
      * PASSO 1 – giorno 16: chiude la raccolta disponibilità.
      * Pre:  fase == RACCOLTA_DISPONIBILITA
      * Post: fase == GENERAZIONE_PIANO
-     
+    */ 
     public void chiudiRaccoltaDisponibilita() {
         if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
             throw new IllegalStateException("Non siamo in fase di raccolta disponibilità.");
@@ -123,7 +126,7 @@ public class Controller {
      * PASSO 2 – genera il piano visite per il mese di raccolta.
      * Pre:  fase == GENERAZIONE_PIANO
      * Post: fase == MODIFICHE_DATI, visite aggiunte al sistema
-     
+    */ 
     public List<Visita> generaPianoVisite() {
         if (sistema.getFase() != FaseOperativa.GENERAZIONE_PIANO)
             throw new IllegalStateException("Prima chiudi la raccolta disponibilità.");
@@ -138,10 +141,11 @@ public class Controller {
 
         // le disponibilità usate si possono eliminare
         for (Volontario v : sistema.getVolontari()) v.cancellaDisponibilita(anno, mese);
+       
         sistema.cancellaDatePrecluse(anno, mese);
-
         sistema.setFase(FaseOperativa.MODIFICHE_DATI);
         salva();
+        
         return nuove;
     }
 
@@ -149,17 +153,18 @@ public class Controller {
      * PASSO 3 – apre la nuova raccolta disponibilità (mese i+2).
      * Pre:  fase == MODIFICHE_DATI
      * Post: fase == RACCOLTA_DISPONIBILITA, mese raccolta avanzato
-     
+     */
     public void apriNuovaRaccolta() {
         if (sistema.getFase() != FaseOperativa.MODIFICHE_DATI)
             throw new IllegalStateException("Prima genera il piano e gestisci le eventuali modifiche.");
         LocalDate att = LocalDate.of(sistema.getAnnoRaccolta(), sistema.getMeseRaccolta(), 1);
+        
         LocalDate prox = att.plusMonths(1);
         sistema.setMeseRaccolta(prox.getYear(), prox.getMonthValue());
         sistema.setFase(FaseOperativa.RACCOLTA_DISPONIBILITA);
         salva();
     }
-    */
+    
     // ================================================================
     // LUOGHI
     // ================================================================
@@ -191,60 +196,76 @@ public class Controller {
 
     public List<Luogo> getLuoghi() { return sistema.getLuoghi(); }
 
+    // Prima verifica che siamo in fase di modifiche dati, altrimenti le operazioni a cascata potrebbero lasciare il sistema in uno stato incoerente (es. volontari senza tipi, tipi senza volontari, luoghi senza tipi).
+    private void verificaFaseModifiche() {
+    if (sistema.getFase() != FaseOperativa.MODIFICHE_DATI) {
+        throw new IllegalStateException( "Le modifiche ai dati sono permesse solo dopo la generazione del piano.");}
+    }
+
     /*
-     * Rimuove un luogo con cascata (V3):
+     * Rimuove un luogo con cascata:
      *   - scollega tutti i tipi di visita dai volontari
      *   - rimuove i volontari rimasti senza alcun tipo
-     
+     */ 
     public void rimuoviLuogo(String nomeLuogo) {
         verificaFaseModifiche();
+        
         Luogo luogo = ottieniLuogo(nomeLuogo);
         for (TipoVisita tv : new ArrayList<>(luogo.getTipiVisita()))
             scollegaDaiVolontari(tv);
+        
         rimuoviVolontariSenzaTipi();
         sistema.rimuoviLuogo(luogo);
         salva();
     }
 
     /*
-     * Rimuove un tipo di visita con cascata (V3):
+     * Rimuove un tipo di visita con cascata:
      *   - scollega dai volontari
      *   - se il luogo resta vuoto → rimuovi il luogo
      *   - se un volontario resta senza tipi → rimuovi il volontario
-     
+     */
     public void rimuoviTipoVisita(String nomeLuogo, String titoloTV) {
         verificaFaseModifiche();
+        
         Luogo luogo = ottieniLuogo(nomeLuogo);
+        
         TipoVisita tv = luogo.getTipiVisita().stream()
             .filter(t -> t.getTitolo().equalsIgnoreCase(titoloTV))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Tipo di visita non trovato."));
+        
         scollegaDaiVolontari(tv);
         luogo.rimuoviTipoVisita(titoloTV);
-        if (!luogo.hasTipiVisita()) sistema.rimuoviLuogo(luogo);
+        
+        if (!luogo.hasTipiVisita()) sistema.rimuoviLuogo(luogo); 
+        
         rimuoviVolontariSenzaTipi();
         salva();
     }
 
     /*
-     * Rimuove un volontario con cascata (V3):
+     * Rimuove un volontario con cascata:
      *   - rimuovilo da ogni tipo di visita
      *   - se un tipo resta senza volontari → rimuovi quel tipo
      *   - se un luogo resta senza tipi → rimuovi quel luogo
-     
+     */
     public void rimuoviVolontario(String nickname) {
         verificaFaseModifiche();
+        
         Volontario v = sistema.trovaVolontario(nickname)
             .orElseThrow(() -> new IllegalArgumentException("Volontario non trovato: " + nickname));
+        
         for (Luogo l : sistema.getLuoghi())
             for (TipoVisita tv : l.getTipiVisita())
                 tv.rimuoviVolontario(v);
+        
         rimuoviTipiSenzaVolontari();
         rimuoviLuoghiSenzaTipi();
         sistema.rimuoviVolontario(v);
         salva();
     }
-    */
+    
     // ================================================================
     // VOLONTARI
     // ================================================================
@@ -269,54 +290,34 @@ public class Controller {
     public List<Volontario>  getVolontari()                      { return sistema.getVolontari(); }
     public List<TipoVisita>  getTipiVisitaDelVolontario(Volontario v) { return sistema.getTipiVisitaPerVolontario(v); }
 
-    // DISPONIBILITÀ (V2)
-    // ================================================================
+    // DISPONIBILITÀ 
 
     public void aggiungiDisponibilita(Volontario v, LocalDate data) {
-    //    if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
-    //        throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
+        if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
+            throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
 
-    //    if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta())
-    //        throw new IllegalArgumentException(
-    //            "Puoi dichiarare disponibilità solo per il mese " +
-    //            sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + ".");
-        if (v == null) {
-        throw new IllegalArgumentException("Il volontario non può essere nullo.");
-        }
-
-        if (data == null) {
-        throw new IllegalArgumentException("La data non può essere nulla.");
-        }
-
-        if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta()) {
-        throw new IllegalArgumentException(
-                "Puoi dichiarare disponibilità solo per il mese "
-                        + sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + "."
-        );
-    }
+        if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta())
+            throw new IllegalArgumentException(
+                "Puoi dichiarare disponibilità solo per il mese di raccolta corrente");
+        
          
         if (sistema.isPreclusa(data))
-            throw new IllegalArgumentException("Il " + data + " è precluso a ogni visita.");
+            throw new IllegalArgumentException("La data selezionata è preclusa a ogni visita.");
 
         GiornoSettimana g = GiornoSettimana.da(data.getDayOfWeek());
         boolean haTipi = sistema.getTipiVisitaPerVolontario(v).stream()
             .anyMatch(tv -> tv.programmabileIl(g) && tv.nelPeriodo(data));
         if (!haTipi)
-            throw new IllegalArgumentException("Nessun tuo tipo di visita è programmabile il " + g + ".");
+            throw new IllegalArgumentException("Nessun tuo tipo di visita è programmabile in questa data: " + g + ".");
 
         v.aggiungiDisponibilita(data);
         salva();
     }
 
     public void rimuoviDisponibilita(Volontario v, LocalDate data) {
-        if (v == null) {
-        throw new IllegalArgumentException("Il volontario non può essere nullo.");
-        }
-    
-        if (data == null) {
-        throw new IllegalArgumentException("La data non può essere nulla.");
-        }
-        
+        if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
+            throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
+
         v.rimuoviDisponibilita(data);
         salva();
     }
@@ -328,7 +329,6 @@ public class Controller {
     return new TreeSet<>(v.getDisponibilita(getAnnoRaccolta(), getMeseRaccolta()));
 }
         
-
     // ================================================================
     // VISITE
     // ================================================================
@@ -425,40 +425,36 @@ public class Controller {
         return sistema.getDatePrecluse(anno, mese);
     }
 
-    // ================================================================
     // UTILITÀ INTERNE
-    // ================================================================
-    /* 
-    private void verificaFaseModifiche() {
-        if (sistema.getFase() != FaseOperativa.MODIFICHE_DATI)
-            throw new IllegalStateException(
-                "Le modifiche ai dati sono permesse solo dopo la generazione del piano.");
-    }*/
 
+    // scollega un tipo di visita da tutti i suoi volontari
     private void scollegaDaiVolontari(TipoVisita tv) {
         for (Volontario v : new ArrayList<>(tv.getVolontari())) tv.rimuoviVolontario(v);
     }
 
     // rimuove i tipi di visita rimasti senza volontari
     private void rimuoviTipiSenzaVolontari() {
-        for (Luogo l : sistema.getLuoghi())
-            for (TipoVisita tv : new ArrayList<>(l.getTipiVisita()))
-                if (!tv.hasVolontari()) l.rimuoviTipoVisita(tv.getTitolo());
+        for (Luogo l : sistema.getLuoghi()){
+            for (TipoVisita tv : new ArrayList<>(l.getTipiVisita())) {
+                if (!tv.hasVolontari()) {} l.rimuoviTipoVisita(tv.getTitolo());
+            }
         }
+    }
     
-
     private void rimuoviLuoghiSenzaTipi() {
-        sistema.getLuoghi().stream()
+        List<Luogo> daRimuovere = sistema.getLuoghi().stream()
             .filter(l -> !l.hasTipiVisita())
-            .collect(Collectors.toList())
-            .forEach(sistema::rimuoviLuogo);
+            .toList();
+    
+    for (Luogo l : daRimuovere) {
+            sistema.rimuoviLuogo(l);
+        }
     }
 
     private void rimuoviVolontariSenzaTipi() {
-        sistema.getVolontari().stream()
+        List<Volontario> daRimuovere = sistema.getVolontari().stream()
             .filter(v -> sistema.getTipiVisitaPerVolontario(v).isEmpty())
-            .collect(Collectors.toList())
-            .forEach(sistema::rimuoviVolontario);
+            .toList();
     }
 
     private void salva() {

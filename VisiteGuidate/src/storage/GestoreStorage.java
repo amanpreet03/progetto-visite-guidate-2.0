@@ -6,8 +6,8 @@ import java.io.*;
 import java.nio.file.*;
 
 /*
- * Salva e carica il sistema usando la serializzazione standard di Java.
- * Il file viene messo nella cartella da cui si lancia l'applicazione.
+ * Salva e carica il sistema usando LA SERIALIZZAZIONE STANDARD DI JAVA.
+ * Il file viene messo nella cartella da cui si lancia l'applicazione .
  */
 public class GestoreStorage {
 

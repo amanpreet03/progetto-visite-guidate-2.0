@@ -270,18 +270,24 @@ public class Controller {
     public List<Volontario>  getVolontari()                      { return sistema.getVolontari(); }
     public List<TipoVisita>  getTipiVisitaDelVolontario(Volontario v) { return sistema.getTipiVisitaPerVolontario(v); }
 
-    /*  ================================================================
     // DISPONIBILITÀ (V2)
     // ================================================================
 
     public void aggiungiDisponibilita(Volontario v, LocalDate data) {
-        if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
-            throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
+    //    if (sistema.getFase() != FaseOperativa.RACCOLTA_DISPONIBILITA)
+    //        throw new IllegalStateException("Le disponibilità non si raccolgono in questa fase.");
 
-        if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta())
-            throw new IllegalArgumentException(
-                "Puoi dichiarare disponibilità solo per il mese " +
-                sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + ".");
+    //    if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta())
+    //        throw new IllegalArgumentException(
+    //            "Puoi dichiarare disponibilità solo per il mese " +
+    //            sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + ".");
+        if (v == null) {
+        throw new IllegalArgumentException("Il volontario non può essere nullo.");
+        }
+
+        if (data == null) {
+        throw new IllegalArgumentException("La data non può essere nulla.");
+        }
 
         if (sistema.isPreclusa(data))
             throw new IllegalArgumentException("Il " + data + " è precluso a ogni visita.");
@@ -297,14 +303,26 @@ public class Controller {
     }
 
     public void rimuoviDisponibilita(Volontario v, LocalDate data) {
+        if (v == null) {
+        throw new IllegalArgumentException("Il volontario non può essere nullo.");
+        }
+    
+        if (data == null) {
+        throw new IllegalArgumentException("La data non può essere nulla.");
+        }
+        
         v.rimuoviDisponibilita(data);
         salva();
     }
 
     public Set<LocalDate> getDisponibilita(Volontario v) {
-        return v.getDisponibilita(sistema.getAnnoRaccolta(), sistema.getMeseRaccolta());
+    if (v == null) {
+        throw new IllegalArgumentException("Il volontario non può essere nullo.");
     }
-    */
+    return v.getDisponibilita(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+}
+        
+
     // ================================================================
     // VISITE
     // ================================================================

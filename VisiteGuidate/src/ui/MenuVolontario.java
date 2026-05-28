@@ -1,4 +1,4 @@
-/*package ui;
+package ui;
 
 import controller.Controller;
 import model.*;
@@ -13,7 +13,7 @@ import java.util.*;
  *   - vedere i tipi di visita a cui è associato
  *   - dichiarare le proprie disponibilità per il mese successivo
  *   - vedere le visite confermate in cui è designato come guida (V4, già preparato)
- 
+ */
 public class MenuVolontario {
 
     private final Controller ctrl;
@@ -39,6 +39,7 @@ public class MenuVolontario {
         }
     }
 
+    // operazione obbligatoria di cambio password al primo accesso
     private void forzaCambioPassword(Volontario v) {
         System.out.println("\n  [Primo accesso: scegli una nuova password]");
         while (true) {
@@ -129,7 +130,7 @@ public class MenuVolontario {
     }
 
     private void mostraDisponibilita(Volontario v, String nomeMese) {
-        sep("LE MIE DISPONIBILITÀ – " + nomeMese.toUpperCase());
+        sep("LE MIE DISPONIBILITÀ: " + nomeMese.toUpperCase());
         Set<LocalDate> disp = ctrl.getDisponibilita(v);
         if (disp.isEmpty()) {
             System.out.println("  Nessuna disponibilità dichiarata per " + nomeMese + ".");
@@ -150,14 +151,14 @@ public class MenuVolontario {
     }
 
     private void mostraVisiteConfermate(Volontario v) {
-        sep("VISITE CONFERMATE – SONO GUIDA");
+        sep("VISITE CONFERMATE  SONO GUIDA");
         List<Visita> visite = ctrl.getVisiteConfermate(v);
         if (visite.isEmpty()) {
             System.out.println("  Nessuna visita confermata al momento.");
         } else {
             for (Visita vis : visite) {
-                System.out.println("\n  📅 " + vis.getData()
-                    + " – " + vis.getTipo().getTitolo());
+                System.out.println("\n  " + vis.getData()
+                    + "  " + vis.getTipo().getTitolo());
                 System.out.println("     Ora: " + vis.getTipo().getOraInizio());
                 System.out.println("     Punto di incontro: " + vis.getTipo().getPuntoIncontro());
                 System.out.println("     Iscritti: " + vis.totaleIscritti()
@@ -165,7 +166,7 @@ public class MenuVolontario {
                 if (!vis.getIscrizioni().isEmpty()) {
                     System.out.println("     Prenotazioni:");
                     vis.getIscrizioni().forEach(i ->
-                        System.out.println("       " + i.getCodice() + " – " + i.getNumeroPersone() + " pers."));
+                        System.out.println("       " + i.getCodice() + "  " + i.getNumeroPersone() + " pers."));
                 }
             }
         }
@@ -176,4 +177,3 @@ public class MenuVolontario {
         System.out.println("\n══ " + titolo + " " + "═".repeat(Math.max(0, 30 - titolo.length())));
     }
 }
-*/

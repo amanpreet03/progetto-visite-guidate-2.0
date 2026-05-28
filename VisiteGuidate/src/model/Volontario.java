@@ -40,36 +40,7 @@ public class Volontario implements Serializable {
 
     public boolean isPrimoAccesso() { return primoAccesso; }
 
-    // ---- disponibilità ----
-
-    // il volontario dichiara che è disponibile in questa data
-    public void aggiungiDisponibilita(LocalDate data) {
-        String chiave = chiave(data);
-        disponibilita.computeIfAbsent(chiave, k -> new HashSet<>()).add(data);
-    }
-
-    // toglie una data di disponibilità (il volontario si è ripensato)
-    public void rimuoviDisponibilita(LocalDate data) {
-        Set<LocalDate> set = disponibilita.get(chiave(data));
-        if (set != null) set.remove(data);
-    }
-
-    public boolean isDisponibileIn(LocalDate data) {
-        Set<LocalDate> set = disponibilita.get(chiave(data));
-        return set != null && set.contains(data);
-    }
-
-    // restituisce le date di disponibilità per un certo mese
-    public Set<LocalDate> getDisponibilita(int anno, int mese) {
-        return Collections.unmodifiableSet(
-            disponibilita.getOrDefault(chiave(anno, mese), Collections.emptySet())
-        );
-    }
-
-    // dopo che l'app ha usato le disponibilità per pianificare, non servono più
-    public void cancellaDisponibilita(int anno, int mese) {
-        disponibilita.remove(chiave(anno, mese));
-    }
+    
 
     // ---- utility ----
 

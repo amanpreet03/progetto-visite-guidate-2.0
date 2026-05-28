@@ -44,25 +44,18 @@ public class Main {
 
         Controller       ctrl = new Controller(sistema);
         MenuConfiguratore mc  = new MenuConfiguratore(ctrl);
-        MenuVolontario    mv  = new MenuVolontario(ctrl);
-      // MenuFruitore      mf  = new MenuFruitore(ctrl);
+    
 
         boolean running = true;
         while (running) {
             System.out.println("\n  Chi sei?");
             System.out.println("  1. Configuratore");
-            System.out.println("  2. Volontario");
-        //    System.out.println("  3. Fruitore");
-            System.out.println("  3. Registrati come configuratore");
-        //    System.out.println("  5. Registrati come fruitore");
+            System.out.println("  2. Registrati come configuratore");
             System.out.println("  0. Esci");
             int scelta = Console.leggiInt("  Scelta: ", 0, 5);
             switch (scelta) {
                 case 1 -> { Configuratore c = mc.login(); if (c != null) mc.menuPrincipale(c); }
-                case 2 -> { Volontario v = mv.login();   if (v != null) mv.menuPrincipale(v); }
-            //    case 3 -> { Fruitore f = mf.login();     if (f != null) mf.menuPrincipale(f); }
-                case 3 -> mc.registrazione();
-            //    case 5 -> mf.registrazione();
+                case 2 -> { Configuratore c = mc.registrazione(); if (c != null) mc.menuPrincipale(c); }
                 case 0 -> running = false;
             }
         }

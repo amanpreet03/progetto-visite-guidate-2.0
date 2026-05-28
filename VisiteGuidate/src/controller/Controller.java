@@ -86,7 +86,7 @@ public class Controller {
         sistema.setAmbito(ambito);
         sistema.setMaxPersone(maxPersone);
         LocalDate prossimo = LocalDate.now().plusMonths(1);
-       // sistema.setMeseRaccolta(prossimo.getYear(), prossimo.getMonthValue());
+        sistema.setMeseRaccolta(prossimo.getYear(), prossimo.getMonthValue());
         salva();
     }
 
@@ -98,6 +98,8 @@ public class Controller {
         sistema.setMaxPersone(max);
         salva();
     }
+    public int getAnnoRaccolta() { return sistema.getAnnoRaccolta(); }
+    public int getMeseRaccolta() { return sistema.getMeseRaccolta(); }
 
     /*  ================================================================
     // FASE OPERATIVA (V3)
@@ -157,9 +159,6 @@ public class Controller {
         sistema.setFase(FaseOperativa.RACCOLTA_DISPONIBILITA);
         salva();
     }
-
-    public int getAnnoRaccolta() { return sistema.getAnnoRaccolta(); }
-    public int getMeseRaccolta() { return sistema.getMeseRaccolta(); }
     */
     // ================================================================
     // LUOGHI
@@ -289,6 +288,13 @@ public class Controller {
         throw new IllegalArgumentException("La data non può essere nulla.");
         }
 
+        if (data.getYear() != sistema.getAnnoRaccolta() || data.getMonthValue() != sistema.getMeseRaccolta()) {
+        throw new IllegalArgumentException(
+                "Puoi dichiarare disponibilità solo per il mese "
+                        + sistema.getMeseRaccolta() + "/" + sistema.getAnnoRaccolta() + "."
+        );
+    }
+         
         if (sistema.isPreclusa(data))
             throw new IllegalArgumentException("Il " + data + " è precluso a ogni visita.");
 
@@ -319,7 +325,7 @@ public class Controller {
     if (v == null) {
         throw new IllegalArgumentException("Il volontario non può essere nullo.");
     }
-    return v.getDisponibilita(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+    return new TreeSet<>(v.getDisponibilita(getAnnoRaccolta(), getMeseRaccolta()));
 }
         
 

@@ -65,18 +65,18 @@ public class MenuVolontario {
             System.out.println("  VOLONTARIO: " + v.getNickname());
             System.out.println("  Mese di riferimento: " + nomeMese);
             System.out.println("  1. Visualizza i miei tipi di visita");
-            System.out.println("  2. Dichiara/modifica disponibilità per " + nomeMese);
+            System.out.println("    2. Dichiara/modifica disponibilità per " + nomeMese);
             System.out.println("  3. Visualizza le mie disponibilità attuali");
             System.out.println("  4. Rimuovi una disponibilità");
-            System.out.println("  5. Visite confermate in cui sono guida");
+    //v4 System.out.println("  5. Visite confermate in cui sono guida");
             System.out.println("  0. Esci");
-            int s = Console.leggiInt("  Scelta: ", 0, 5);
+            int s = Console.leggiInt("  Scelta: ", 0, 4);
             switch (s) {
                 case 1 -> mostraTipiVisita(v);
                 case 2 -> dichiaraDisponibilita(v, nomeMese);
                 case 3 -> mostraDisponibilita(v, nomeMese);
                 case 4 -> rimuoviDisponibilita(v);
-                case 5 -> mostraVisiteConfermate(v);
+        // case 5 -> mostraVisiteConfermate(v);
                 case 0 -> esci = true;
             }
         }

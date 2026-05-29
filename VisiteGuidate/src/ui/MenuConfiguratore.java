@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 /*
- * Menu testuale per il configuratore – V1/V2/V3.
+ * Menu testuale per il configuratore 
  * Tutta la logica è delegata al Controller.
  */
 public class MenuConfiguratore {

@@ -82,29 +82,27 @@ public class MenuConfiguratore {
             }
 
             System.out.println("  Ambito: " + ctrl.getAmbito());
-            //System.out.println("  Fase:   " + ctrl.getFase());
-            //if (ctrl.getMeseRaccolta() > 0)
-            //    System.out.println("  Raccolta: " + ctrl.getMeseRaccolta() + "/" + ctrl.getAnnoRaccolta());
+            System.out.println("  Fase:   " + ctrl.getFase());
+            if (ctrl.getMeseRaccolta() > 0)
+            System.out.println("  Raccolta: " + ctrl.getMeseRaccolta() + "/" + ctrl.getAnnoRaccolta());
             System.out.println();
             System.out.println("  ── Dati ───────────────────────────────");
             System.out.println("  1. Aggiungi luogo");
             System.out.println("  2. Aggiungi tipo di visita a luogo esistente");
             System.out.println("  3. Aggiungi volontario a tipo di visita");
             System.out.println("  4. Inserisci nuovo volontario");
-        //    System.out.println("  ── V3 – Rimozioni ─────────────────────");
-        //    System.out.println("  5. Rimuovi luogo");
-        //    System.out.println("  6. Rimuovi tipo di visita");
-        //    System.out.println("  7. Rimuovi volontario");
-        //    System.out.println("  ── V3 – Ciclo mensile ─────────────────");
-        //    System.out.println("  8. Chiudi raccolta disponibilità");
-        //    System.out.println("  9. Genera piano visite");
-        //    System.out.println("  10. Apri nuova raccolta disponibilità");
+            System.out.println("  5. Rimuovi luogo");
+            System.out.println("  6. Rimuovi tipo di visita");
+            System.out.println("  7. Rimuovi volontario");
+            System.out.println("  8. Chiudi raccolta disponibilità");
+            System.out.println("  9. Genera piano visite");
+            System.out.println("  10. Apri nuova raccolta disponibilità");
             System.out.println("  ── Visualizzazione ────────────────────");
-            System.out.println("  5. Visualizza luoghi");
-            System.out.println("  6. Visualizza volontari");
-            System.out.println("  7. Visualizza visite");
-            System.out.println("  8. Date precluse");
-            System.out.println("  9. Modifica max persone per iscrizione");
+            System.out.println("  11. Visualizza luoghi");
+            System.out.println("  12. Visualizza volontari");
+            System.out.println("  13. Visualizza visite");
+            System.out.println("  14. Date precluse");
+            System.out.println("  15. Modifica max persone per iscrizione");
             System.out.println("  0. Esci");
 
             int s = Console.leggiInt("  Scelta: ", 0, 15);
@@ -113,17 +111,17 @@ public class MenuConfiguratore {
                 case 2  -> aggiungiTipoVisita();
                 case 3  -> aggiungiVolontarioATipo();
                 case 4  -> inserisciVolontario();
-               // case 5  -> rimuoviLuogo();
-               // case 6  -> rimuoviTipoVisita();
-               // case 7  -> rimuoviVolontario();
-               // case 8  -> chiudiRaccolta();
-               // case 9  -> generaPiano();
-               //case 10 -> apriRaccolta();
-                case 5  -> mostraLuoghi();
-                case 6  -> mostraVolontari();
-                case 7  -> mostraVisite();
-                case 8  -> gestionePrecluse();
-                case 9  -> modificaMaxPersone();
+                case 5  -> rimuoviLuogo();
+                case 6  -> rimuoviTipoVisita();
+                case 7  -> rimuoviVolontario();
+                case 8  -> chiudiRaccolta();
+                case 9  -> generaPiano();
+                case 10 -> apriRaccolta();
+                case 11  -> mostraLuoghi();
+                case 12  -> mostraVolontari();
+                case 13  -> mostraVisite();
+                case 14  -> gestionePrecluse();
+                case 15  -> modificaMaxPersone();
                 case 0  -> esci = true;
             }
         }
@@ -205,7 +203,7 @@ public class MenuConfiguratore {
         Console.pausa();
     }
 
-    /*  ---- rimozioni V3 ----
+ //  ---- rimozioni V3 ----
 
     private void rimuoviLuogo() {
         sep("RIMUOVI LUOGO");
@@ -285,7 +283,7 @@ public class MenuConfiguratore {
         } catch (Exception e) { System.out.println("  Errore: " + e.getMessage()); }
         Console.pausa();
     }
-    */
+    
     // ---- visualizzazione ----
 
     private void mostraLuoghi() {

@@ -53,14 +53,14 @@ public class Main {
             System.out.println("  2. Volontario");
             System.out.println("  3. Registrati come configuratore");
             System.out.println("  0. Esci");
-            int scelta = Console.leggiInt("  Scelta: ", 0, 5);
+            int scelta = Console.leggiInt("  Scelta: ", 0, 3);
             switch (scelta) {
                 case 1 -> { Configuratore c = mc.login(); if (c != null) mc.menuPrincipale(c); }
-                case 2 -> { Volontario v = mv.login();   if (v != null) mv.menuPrincipale(v); }}
-                case 3 -> mc.registrazione();;
-                case 0 -> running = false;
+                case 2 -> { Volontario v = mv.login();   if (v != null) mv.menuPrincipale(v); }
+                case 3 -> {mc.registrazione(); }
+                case 0 -> {running = false;}
             }
         }
         System.out.println("  Arrivederci!");
+    }
 }
-
